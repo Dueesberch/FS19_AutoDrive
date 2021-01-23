@@ -5,6 +5,7 @@ ADInputManager.actionsToInputs = {
     ADRecord = "input_record",
     ADRecord_Dual = "input_record_dual",
     ADEnDisable = "input_start_stop",
+    ADDisable = "input_stop",
     ADSelectTarget = "input_nextTarget",
     ADSelectPreviousTarget = "input_previousTarget",
     ADSelectTargetUnload = "input_nextTarget_Unload",
@@ -223,6 +224,12 @@ function ADInputManager:input_start_stop(vehicle)
         vehicle:stopAutoDrive()
     else
         vehicle.ad.stateModule:getCurrentMode():start()
+    end
+end
+
+function ADInputManager:input_stop(vehicle)
+    if vehicle.ad.stateModule:isActive() then
+        vehicle:stopAutoDrive()
     end
 end
 
