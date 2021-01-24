@@ -262,8 +262,9 @@ function AutoDriveHud:createHudAt(hudX, hudY)
 	if AutoDrive.getSetting("wideHUD") and AutoDrive.getSetting("addSettingsToHUD") then
 		self:AddEditModeButtons()
 
-        if g_courseplay ~= nil then
-            self:AddButton("input_startCp", "input_toggleCP_AIVE", "hud_startCp", 1, true)
+		if g_courseplay ~= nil then
+			self:AddButton("input_stop", nil, "input_ADDisable", 1, true)
+            -- self:AddButton("input_startCp", "input_toggleCP_AIVE", "hud_startCp", 1, true)
         elseif (vehicle ~= nil and vehicle.acParameters ~= nil) then
             self:AddButton("input_startCp", "input_toggleCP_AIVE", "hud_startCp", 3, true)
         end

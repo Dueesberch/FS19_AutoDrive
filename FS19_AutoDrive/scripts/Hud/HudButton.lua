@@ -79,6 +79,12 @@ function ADHudButton:getNewState(vehicle)
         end
     end
 
+    if self.primaryAction == "input_stop" then
+        if vehicle.ad.stateModule:isActive() then
+            newState = 2
+        end
+    end
+
     if self.primaryAction == "input_debug" then
         if AutoDrive.isEditorModeEnabled() then
             newState = 2
