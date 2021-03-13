@@ -154,6 +154,14 @@ function AutoDrive:dijkstraLive(start, target)
 		return false
 	end
 
+	g_gui:showGui("ADBoomSelectGui")
+
+	g_logManager:info("AD Status BoomSelectGui before %s", AutoDrive.gui.ADBoomSelectGui.isOpen)
+	while AutoDrive.gui.ADBoomSelectGui.isOpen do
+		g_logManager:info("AD Status BoomSelectGui  while %s", AutoDrive.gui.ADBoomSelectGui.isOpen)
+	end
+	g_logManager:info("AD Status BoomSelectGui after %s", AutoDrive.gui.ADBoomSelectGui.isOpen)
+
 	AutoDrive:dijkstraLiveInit(start)
 
 	while next(AutoDrive.dijkstraCalc.Q, nil) ~= nil do

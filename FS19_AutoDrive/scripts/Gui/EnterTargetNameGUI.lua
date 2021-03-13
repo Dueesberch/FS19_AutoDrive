@@ -68,14 +68,18 @@ function ADEnterTargetNameGui:onClickOk()
     if self.edit then
         ADGraphManager:renameMapMarker(self.textInputElement.text, self.editId)
     else
-        ADGraphManager:createMapMarkerOnClosest(g_currentMission.controlledVehicle, self.textInputElement.text)
+        ADGraphManager:createMapMarkerOnClosest(g_currentMission.controlledVehicle, self.textInputElement.text, false)
     end
     self:onClickBack()
 end
 
 function ADEnterTargetNameGui:onClickActivate()
     ADEnterTargetNameGui:superClass().onClickActivate(self)
-    ADGraphManager:removeMapMarker(self.editId)
+    if self.edit then
+        ADGraphManager:removeMapMarker(self.editId)
+    else
+        ADGraphManager:createMapMarkerOnClosest(g_currentMission.controlledVehicle, self.textInputElement.text, true)
+    end
     self:onClickBack()
 end
 

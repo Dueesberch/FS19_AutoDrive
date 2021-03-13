@@ -14,7 +14,8 @@
 
         <GuiElement type="flowLayout" profile="buttonBoxDocked" id="buttonsCreateElement">
             <GuiElement type="button" profile="buttonBack" text="$l10n_button_back" onClick="onClickBack" />
-            <GuiElement type="button" profile="buttonOK" text="$l10n_gui_ad_createButtonText" onClick="onClickOk" />
+            <GuiElement type="button" profile="buttonOK" text="$l10n_gui_ad_createMarkerText" onClick="onClickOk" />
+            <GuiElement type="button" profile="buttonActivate" text="$l10n_gui_ad_createBoomText" onClick="onClickActivate" />
         </GuiElement>
 
         <GuiElement type="flowLayout" profile="buttonBoxDocked" id="buttonsEditElement">

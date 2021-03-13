@@ -97,6 +97,10 @@ function AutoDrive.readFromXML(xmlFile)
 	local mapMarker = {}
 	local mapMarkerCounter = 1
 
+	
+	ADGraphManager:resetMapBooms()
+	local mapBoomCounter = 1
+
 	while mapMarker ~= nil do
 		mapMarker.id = getXMLFloat(xmlFile, "AutoDrive.mapmarker.mm" .. mapMarkerCounter .. ".id")
 		if mapMarker.id == nil or mapMarker.id == "" then
@@ -122,6 +126,11 @@ function AutoDrive.readFromXML(xmlFile)
 		if mapMarker.group == nil then
 			mapMarker.group = "All"
 		end
+		
+		mapMarker.boom = getXMLBool(xmlFile, "AutoDrive.mapmarker.mm" .. mapMarkerCounter .. ".boom")
+		if mapMarker.boom == nil then
+			mapMarker.boom = false
+		end
 
 		-- make sure group existst
 		if ADGraphManager:getGroupByName(mapMarker.group) == nil then
@@ -130,6 +139,12 @@ function AutoDrive.readFromXML(xmlFile)
 
 		-- finally save map marker and reset table
 		ADGraphManager:setMapMarker(mapMarker)
+		
+		if mapMarker.boom then
+			mapMarker.boomIndex = mapBoomCounter
+			ADGraphManager:setMapBoom(mapMarker)
+			mapBoomCounter = mapBoomCounter + 1
+		end
 		mapMarker = {}
 		mapMarkerCounter = mapMarkerCounter + 1
 	end
@@ -324,6 +339,7 @@ function AutoDrive.saveToXML(xmlFile)
 			setXMLFloat(xmlFile, "AutoDrive.mapmarker.mm" .. tostring(markerIndex) .. ".id", ADGraphManager:getMapMarkerById(i).id)
 			setXMLString(xmlFile, "AutoDrive.mapmarker.mm" .. tostring(markerIndex) .. ".name", ADGraphManager:getMapMarkerById(i).name)
 			setXMLString(xmlFile, "AutoDrive.mapmarker.mm" .. tostring(markerIndex) .. ".group", ADGraphManager:getMapMarkerById(i).group)
+			setXMLBool(xmlFile, "AutoDrive.mapmarker.mm" .. tostring(markerIndex) .. ".boom", ADGraphManager:getMapMarkerById(i).boom)
 			markerIndex = markerIndex + 1
 		end
 	end
@@ -374,6 +390,7 @@ function AutoDrive.writeGraphToXml(xmlId, rootNode, waypoints, markers, groups)
 		setXMLInt(xmlId, key .. "#i", m.id)
 		setXMLString(xmlId, key .. "#n", m.name)
 		setXMLString(xmlId, key .. "#g", m.group)
+		setXMLBool(xmlId, key .. "#b", m.boom )
 	end
 
 	-- writing groups
@@ -436,9 +453,10 @@ function AutoDrive.readGraphFromXml(xmlId, rootNode)
 			local id = getXMLInt(xmlId, key .. "#i")
 			local name = getXMLString(xmlId, key .. "#n")
 			local group = getXMLString(xmlId, key .. "#g")
+			local boom = getXMLBool(xmlId, key .. "#b")
 
 			i = i + 1
-			mapMarkers[i] = {id = id, name = name, group = group, markerIndex = i}
+			mapMarkers[i] = {id = id, name = name, group = group, boom = boom, markerIndex = i}
 		end
 	end
 

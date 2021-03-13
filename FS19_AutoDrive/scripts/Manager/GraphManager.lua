@@ -3,6 +3,7 @@ ADGraphManager = {}
 function ADGraphManager:load()
 	self.wayPoints = {}
 	self.mapMarkers = {}
+	self.mapBooms = {}
 	self.groups = {}
 	self.groups["All"] = 1
 	self.changes = false
@@ -58,6 +59,10 @@ function ADGraphManager:getMapMarkers()
 	return self.mapMarkers
 end
 
+function ADGraphManager:getMapBooms()
+	return self.mapBooms
+end
+
 function ADGraphManager:getMapMarkerById(mapMarkerId)
 	return self.mapMarkers[mapMarkerId]
 end
@@ -110,12 +115,20 @@ function ADGraphManager:resetMapMarkers()
 	self.mapMarkers = {}
 end
 
+function ADGraphManager:resetMapBooms()
+	self.mapMarkers = {}
+end
+
 function ADGraphManager:setMapMarkers(mapMarkers)
 	self.mapMarkers = mapMarkers
 end
 
 function ADGraphManager:setMapMarker(mapMarker)
 	self.mapMarkers[mapMarker.markerIndex] = mapMarker
+end
+
+function ADGraphManager:setMapBoom(mapMarker)
+	self.mapBooms[mapMarker.boomIndex] = mapMarker
 end
 
 function ADGraphManager:getPathTo(vehicle, waypointId)
@@ -295,24 +308,28 @@ function ADGraphManager:renameMapMarker(newName, markerId, sendEvent)
 	end
 end
 
-function ADGraphManager:createMapMarkerOnClosest(vehicle, markerName, sendEvent)
+function ADGraphManager:createMapMarkerOnClosest(vehicle, markerName, sendEvent, boom)
 	if vehicle ~= nil and markerName:len() > 1 then
 		-- Finding closest waypoint
 		local closest, _ = vehicle:getClosestWayPoint()
 		if closest ~= nil and closest ~= -1 and self.wayPoints[closest] ~= nil then
-			self:createMapMarker(closest, markerName, sendEvent)
+			self:createMapMarker(closest, markerName, sendEvent, boom)
 		end
 	end
 end
 
-function ADGraphManager:createMapMarker(markerId, markerName, sendEvent)
+function ADGraphManager:createMapMarker(markerId, markerName, sendEvent, boom)
 	if markerId ~= nil and markerId >= 0 and markerName:len() > 1 then
 		if sendEvent == nil or sendEvent == true then
 			-- Propagating marker creation all over the network
-			AutoDriveCreateMapMarkerEvent.sendEvent(markerId, markerName)
+			AutoDriveCreateMapMarkerEvent.sendEvent(markerId, markerName) -- TODO set image gate
 		else
 			-- Creating the new map marker
-			self.mapMarkers[#self.mapMarkers + 1] = {id = markerId, markerIndex = (#self.mapMarkers + 1), name = markerName, group = "All"}
+			if self.boom then
+				self.mapMarkers[#self.mapMarkers + 1] = {id = markerId, markerIndex = (#self.mapMarkers + 1), name = markerName, group = "All", boom = false}
+			else
+				self.mapMarkers[#self.mapMarkers + 1] = {id = markerId, markerIndex = (#self.mapMarkers + 1), name = markerName, group = "All", boom = true}
+			end
 
 			-- Calling external interop listeners
 			AutoDrive:notifyDestinationListeners()
@@ -430,7 +447,11 @@ function ADGraphManager:removeMapMarker(markerId, sendEvent)
 			AutoDriveDeleteMapMarkerEvent.sendEvent(markerId)
 		else
 			if self.mapMarkers[markerId] ~= nil then
+				boomId = self.mapMarkers[markerId].boomIndex
 				table.remove(self.mapMarkers, markerId)
+				if boomId ~= nil then
+					table.remove(self.mapBooms, boomId)
+				end
 				--Readjust stored markerIndex values to point to corrected ID
 				for markerID, marker in pairs(self.mapMarkers) do
 					marker.markerIndex = markerID
