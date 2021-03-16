@@ -196,7 +196,7 @@ function AutoDriveHud:createHudAt(hudX, hudY)
 	)
 
 	-------- BASE ROW BUTTONS --------------
-	self:AddButton("input_start_stop", "input_stop", "input_ADEnDisable", 1, true)
+	self:AddButton("input_start_stop", "input_second_func", "input_ADEnDisable", 1, true)
 	self:AddButton("input_silomode", "input_previousMode", "input_ADSilomode", 1, true)
 	self:AddButton("input_continue", nil, "input_AD_continue", 1, true)
 	self:AddButton("input_parkVehicle", "input_setParkDestination", "input_ADParkVehicle", 1, true)

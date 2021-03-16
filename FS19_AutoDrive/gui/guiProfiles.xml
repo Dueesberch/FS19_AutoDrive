@@ -285,7 +285,7 @@
     </Profile>
 
     <Profile name="autoDriveBoomSelectList" extends="list">
-        <Value name="size" value="692px 690px" />
+        <Value name="size" value="346px 690px" />
         <Value name="selectOnScroll" value="true" />
         <Value name="screenAlign" value="topLeft" />
         <Value name="positionOrigin" value="topLeft" />
@@ -306,6 +306,29 @@
     </Profile>
 
     <Profile name="autoDriveBoomSelectListItemAlternate" extends="autoDriveBoomSelectListItem" with="alternateRow anchorMiddleLeft" />
+
+    <Profile name="autoDriveBoomSelectedList" extends="list">
+        <Value name="size" value="346px 690px" />
+        <Value name="selectOnScroll" value="true" />
+        <Value name="screenAlign" value="topLeft" />
+        <Value name="positionOrigin" value="topLeft" />
+        <Value name="isHorizontalList" value="false" />
+        <Value name="itemsPerCol" value="13" />
+        <Value name="listItemHeight" value="46px" />
+        <Value name="listItemWidth" value="690px" />
+        <Value name="rowBackgroundProfile" value="autoDriveBoomSelectedListItem" />
+        <Value name="rowBackgroundProfileAlternate" value="autoDriveBoomSelectedListItemAlternate" />
+    </Profile>
+
+    <Profile name="autoDriveBoomSelectedListItem" extends="listItem">
+        <Value name="imageColor" value="$preset_colorListRowBackground" />
+        <Value name="imageFocusedColor" value="$preset_colorMainUI" />
+        <Value name="imageSelectedColor" value="$preset_colorMainUI" />
+        <Value name="size" value="690px 46px" />
+        <Value name="position" value="0px 0px" />
+    </Profile>
+
+    <Profile name="autoDriveBoomSelectedListItemAlternate" extends="autoDriveBoomSelectedListItem" with="alternateRow anchorMiddleLeft" />
 
     <Profile name="autoDriveBoomSelectItemText" extends="textDefault">
         <Value name="size" value="610px 46px" />

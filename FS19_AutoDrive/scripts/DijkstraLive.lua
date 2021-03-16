@@ -148,19 +148,12 @@ function AutoDrive:dijkstraLive(start, target)
 	local angle = 0
 	local result = false
 	local target_found = false
-	local wayPoints = ADGraphManager:getWayPoints()
+	local vehicle = g_currentMission.controlledVehicle
+	local wayPoints = vehicle.ad.wayPoints --ADGraphManager:getWayPoints()
 
 	if start == nil or start == 0 or start == -1 or target == nil or target == 0 or target == -1 then
 		return false
 	end
-
-	g_gui:showGui("ADBoomSelectGui")
-
-	g_logManager:info("AD Status BoomSelectGui before %s", AutoDrive.gui.ADBoomSelectGui.isOpen)
-	while AutoDrive.gui.ADBoomSelectGui.isOpen do
-		g_logManager:info("AD Status BoomSelectGui  while %s", AutoDrive.gui.ADBoomSelectGui.isOpen)
-	end
-	g_logManager:info("AD Status BoomSelectGui after %s", AutoDrive.gui.ADBoomSelectGui.isOpen)
 
 	AutoDrive:dijkstraLiveInit(start)
 

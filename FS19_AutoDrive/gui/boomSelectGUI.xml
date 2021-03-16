@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<GUI onOpen="onOpen" onClose="onClose" onCreate="onCreate">
+    <GuiElement type="empty" profile="newLayer" />
+    <GuiElement type="bitmap" profile="dialogFullscreenBg" />
+
+    <GuiElement type="bitmap" profile="yesNoDialogBg" position="0px -150px" size="810px 780px" screenAlign="topCenter" positionOrigin="topCenter">
+        <GuiElement type="bitmap" profile="dialogHeaderDocked">
+            <GuiElement type="text" profile="dialogHeaderText" text="$l10n_gui_ad_boomSelectTitle" />
+        </GuiElement>
+
+        <GuiElement type="empty" profile="autoDriveBoomSelectNavigationBox">
+            <GuiElement type="list" profile="autoDriveBoomSelectList" position="1px -1px" onSelectionChanged="onListSelectionChanged" onClick="onDoubleClick" id="autoDriveBoomSelectList">
+                <GuiElement type="listItem" profile="autoDriveBoomSelectListItem" id="listItemTemplate">
+                    
+                    <GuiElement type="text" profile="autoDriveBoomSelectItemText" text="Boom" name="listItemText" />
+                    <GuiElement type="text" profile="autoDriveBoomSelectItemDate" text="2020/02/27 18:13:44" name="listItemDate" />
+                    
+                </GuiElement>
+            </GuiElement>
+            <GuiElement type="bitmap" profile="verticalGlassListSliderBackground" size="28px 344px" position="-1px -1px">
+                <GuiElement type="slider" profile="verticalGlassListSlider" size="16px 338px" dataElementId="autoDriveBoomSelectList" handleFocus="false" />
+            </GuiElement>
+        </GuiElement>
+
+        <GuiElement type="empty" profile="autoDriveBoomSelectNavigationBox">
+            <GuiElement type="list" profile="autoDriveBoomSelectedList" position="1px -1px" onSelectionChanged="onListSelectionChanged" onClick="onDoubleClick" id="autoDriveBoomSelectedList">
+                <GuiElement type="listItem" profile="autoDriveBoomSelectedListItem" id="listItemTemplate">
+                    
+                    <GuiElement type="text" profile="autoDriveBoomSelectItemText" text="Boom" name="listItemText" />
+                    <GuiElement type="text" profile="autoDriveBoomSelectItemDate" text="2020/02/27 18:13:44" name="listItemDate" />
+                    
+                </GuiElement>
+            </GuiElement>
+            <GuiElement type="bitmap" profile="verticalGlassListSliderBackground" size="28px 344px" position="-1px -1px">
+                <GuiElement type="slider" profile="verticalGlassListSlider" size="16px 338px" dataElementId="autoDriveBoomSelectList" handleFocus="false" />
+            </GuiElement>
+        </GuiElement>
+
+        <GuiElement type="flowLayout" profile="buttonBoxDocked">
+            <GuiElement type="button" profile="buttonBack" text="$l10n_gui_ad_button_wo_booms" onClick="onClickBack" />
+            <GuiElement type="button" profile="buttonOK" text="$l10n_gui_ad_button_start" onClick="onClickOk" />
+        </GuiElement>
+    </GuiElement>
+</GUI>

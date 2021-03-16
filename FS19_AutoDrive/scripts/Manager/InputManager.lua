@@ -226,13 +226,29 @@ function ADInputManager:input_start_stop(vehicle)
         vehicle.ad.isStoppingWithError = true
         vehicle:stopAutoDrive()
     else
+        vehicle.ad.wayPoints = ADGraphManager:getWayPoints()
         vehicle.ad.stateModule:getCurrentMode():start()
     end
 end
 
-function ADInputManager:input_stop(vehicle)
-    if vehicle.ad.stateModule:isActive() then
+function ADInputManager:input_second_func(vehicle)
+    if vehicle.ad.stateModule:isActive() and AutoDrive.leftCTRLmodifierKeyPressed then
         vehicle:stopAutoDrive()
+    else
+        if ADGraphManager:getWayPointById(1) == nil or vehicle.ad.stateModule:getFirstMarker() == nil then
+            return
+        end
+        if vehicle.ad.stateModule:isActive() then
+            vehicle.ad.isStoppingWithError = true
+            vehicle:stopAutoDrive()
+        else
+            -- temp map
+            vehicle.ad.wayPoints = ADGraphManager:getWayPoints()
+            -- open gui
+            ret = g_gui:loadGui(AutoDrive.directory .. "gui/boomSelectGUI.xml", vehicle.id, ADBoomSelectGui:new()) -- immer nur eine gui mit der entsprechenden ID vorhanden > max boom guis = anzahl vehicle
+	        g_gui:showGui(vehicle.id)
+            
+        end
     end
 end
 

@@ -59,9 +59,6 @@ function ADGraphManager:getMapMarkers()
 	return self.mapMarkers
 end
 
-function ADGraphManager:getMapBooms()
-	return self.mapBooms
-end
 
 function ADGraphManager:getMapMarkerById(mapMarkerId)
 	return self.mapMarkers[mapMarkerId]
@@ -115,20 +112,12 @@ function ADGraphManager:resetMapMarkers()
 	self.mapMarkers = {}
 end
 
-function ADGraphManager:resetMapBooms()
-	self.mapMarkers = {}
-end
-
 function ADGraphManager:setMapMarkers(mapMarkers)
 	self.mapMarkers = mapMarkers
 end
 
 function ADGraphManager:setMapMarker(mapMarker)
 	self.mapMarkers[mapMarker.markerIndex] = mapMarker
-end
-
-function ADGraphManager:setMapBoom(mapMarker)
-	self.mapBooms[mapMarker.boomIndex] = mapMarker
 end
 
 function ADGraphManager:getPathTo(vehicle, waypointId)
@@ -962,5 +951,85 @@ function ADGraphManager:createMarkersAtOpenEnds()
 				g_currentMission:addMapHotspot(mh)
 			end
 		end
+	end
+end
+
+
+function ADGraphManager:getMapBooms()
+	return self.mapBooms
+end
+
+function ADGraphManager:resetMapBooms()
+	self.mapMarkers = {}
+end
+
+function ADGraphManager:setMapBoom(mapMarker)
+	self.mapBooms[mapMarker.boomIndex] = mapMarker
+end
+
+function ADGraphManager:removeWayPointVehicle(wayPointsVehicle, boom, sendEvent)
+	if wayPointId ~= nil and wayPointId >= 0 and wayPointsVehicle[wayPointId] ~= nil then
+		local boomId = boom.id
+		local wayPoint = wayPointsVehicle[wayPointId]
+
+		-- Removing incoming node reference on all out nodes
+		for _, id in pairs(wayPoint.out) do
+			local incomingId = table.indexOf(self.wayPoints[id].incoming, wayPoint.id)
+			if incomingId ~= nil then
+				table.remove(self.wayPoints[id].incoming, incomingId)
+			end
+		end
+
+		-- Removing out node reference on all incoming nodes
+		for _, id in pairs(wayPoint.incoming) do
+			local outId = table.indexOf(self.wayPoints[id].out, wayPoint.id)
+			if outId ~= nil then
+				table.remove(self.wayPoints[id].out, outId)
+			end
+		end
+
+		if #wayPoint.incoming == 0 then
+			-- This is a reverse node, so we can't rely on the incoming table
+			for _, wp in pairs(self.wayPoints) do
+				if table.contains(wp.out, wayPoint.id) then
+					table.removeValue(wp.out, wayPoint.id)
+				end
+			end
+		end
+
+		-- Removing waypoint from waypoints array and invalidate it by setting id to -1
+		local wp = table.remove(self.wayPoints, wayPoint.id)
+		if wp ~= nil then
+			wp.id = -1
+		end
+
+		-- Adjusting ids for all succesive nodes :(
+		for _, wp in pairs(self.wayPoints) do
+			if wp.id > wayPointId then
+				wp.id = wp.id - 1
+			end
+			for i, outId in pairs(wp.out) do
+				if outId > wayPointId then
+					wp.out[i] = outId - 1
+				end
+			end
+			for i, incomingId in pairs(wp.incoming) do
+				if incomingId > wayPointId then
+					wp.incoming[i] = incomingId - 1
+				end
+			end
+		end
+
+		-- Adjusting way point id in markers
+		for _, marker in pairs(self.mapMarkers) do
+			if marker.id > wayPointId then
+				marker.id = marker.id - 1
+			end
+		end
+
+		-- Resetting HUD
+		AutoDrive.Hud.lastUIScale = 0
+
+		self:markChanges()
 	end
 end
