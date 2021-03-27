@@ -6,7 +6,7 @@ function AutoDrive:dijkstraLiveLongLine(current_in, linked_in, target_id)
 	local angle = 0
 	local current_pre = 0
 	local vehicle = g_currentMission.controlledVehicle
-	local wayPoints = vehicle.ad.wayPoints --ADGraphManager:getWayPoints()
+	local wayPoints = vehicle.ad.wayPoints
 	local isLinewithReverse = false
 	local count = 1
 
@@ -150,7 +150,7 @@ function AutoDrive:dijkstraLive(start, target)
 	local result = false
 	local target_found = false
 	local vehicle = g_currentMission.controlledVehicle
-	local wayPoints = vehicle.ad.wayPoints --ADGraphManager:getWayPoints()
+	local wayPoints = vehicle.ad.wayPoints
 
 	if start == nil or start == 0 or start == -1 or target == nil or target == 0 or target == -1 then
 		return false
@@ -317,7 +317,7 @@ function AutoDrive:dijkstraLiveShortestPath(start_id, target_id)
     end
 
 	local vehicle = g_currentMission.controlledVehicle
-	local wayPoints = vehicle.ad.wayPoints --ADGraphManager:getWayPoints()
+	local wayPoints = vehicle.ad.wayPoints
 	local ret = false
 	ret = AutoDrive:dijkstraLive(start_id, target_id)
 	if false == ret then
