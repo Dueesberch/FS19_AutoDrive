@@ -328,7 +328,5 @@
 		<text name="gui_ad_boomSelectTitle" 					text="Schranken auswählen" />
 		<text name="gui_ad_button_start" 						text="Berechnung starten" />
 		<text name="gui_ad_button_wo_booms" 					text="Ohne Schranken starten" />
-	<text name = "gui_ad_combineCPADHudMouse"				text = "Kombiniere CP/AD Buttons"/>
-    	<text name = "gui_ad_combineCPADHudMouse_tooltip"		text = "off: default / simple: CP: sek. Maus-Aktion > Maus an + aus, AD: HUD ein/ausblenden > beide Huds an + aus / full: wie simple, aber Huds können einzeln durchgeschaltet werden / Tip: Lösche unbenutzte Tastenzuweisungen"/>
 	</texts>
 </l10n>
