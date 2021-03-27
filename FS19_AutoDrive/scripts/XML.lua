@@ -143,6 +143,7 @@ function AutoDrive.readFromXML(xmlFile)
 		
 		if mapMarker.boom then
 			mapMarker.boomIndex = mapBoomCounter
+			mapMarker.state = ""
 			ADGraphManager:setMapBoom(mapMarker)
 			mapBoomCounter = mapBoomCounter + 1
 		end

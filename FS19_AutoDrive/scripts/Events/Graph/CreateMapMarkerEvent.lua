@@ -9,10 +9,11 @@ function AutoDriveCreateMapMarkerEvent:emptyNew()
 	return o
 end
 
-function AutoDriveCreateMapMarkerEvent:new(wayPointId, markerName)
+function AutoDriveCreateMapMarkerEvent:new(wayPointId, markerName, isBoom)
 	local o = AutoDriveCreateMapMarkerEvent:emptyNew()
 	o.wayPointId = wayPointId
 	o.markerName = markerName
+	o.isBoom = isBoom
 	return o
 end
 
@@ -32,12 +33,12 @@ function AutoDriveCreateMapMarkerEvent:run(connection)
 		-- If the event is coming from a client, server have only to broadcast
 		AutoDriveCreateMapMarkerEvent.sendEvent(self.wayPointId, self.markerName)
 	else
-		ADGraphManager:createMapMarker(self.wayPointId, self.markerName, false, false)
+		ADGraphManager:createMapMarker(self.wayPointId, self.markerName, self.isBoom, false)
 	end
 end
 
-function AutoDriveCreateMapMarkerEvent.sendEvent(wayPointId, markerName)
-	local event = AutoDriveCreateMapMarkerEvent:new(wayPointId, markerName)
+function AutoDriveCreateMapMarkerEvent.sendEvent(wayPointId, markerName, isBoom)
+	local event = AutoDriveCreateMapMarkerEvent:new(wayPointId, markerName, isBoom)
 	if g_server ~= nil then
 		-- Server have to broadcast to all clients and himself
 		g_server:broadcastEvent(event, true)

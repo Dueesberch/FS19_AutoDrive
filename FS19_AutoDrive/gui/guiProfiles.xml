@@ -285,8 +285,8 @@
     </Profile>
 
     <Profile name="autoDriveBoomSelectList" extends="list">
-        <Value name="size" value="346px 690px" />
-        <Value name="selectOnScroll" value="true" />
+        <Value name="size" value="692px 690px" />
+        <Value name="selectOnScroll" value="false" />
         <Value name="screenAlign" value="topLeft" />
         <Value name="positionOrigin" value="topLeft" />
         <Value name="isHorizontalList" value="false" />
@@ -308,7 +308,7 @@
     <Profile name="autoDriveBoomSelectListItemAlternate" extends="autoDriveBoomSelectListItem" with="alternateRow anchorMiddleLeft" />
 
     <Profile name="autoDriveBoomSelectedList" extends="list">
-        <Value name="size" value="346px 690px" />
+        <Value name="size" value="692px 690px" />
         <Value name="selectOnScroll" value="true" />
         <Value name="screenAlign" value="topLeft" />
         <Value name="positionOrigin" value="topLeft" />
@@ -339,8 +339,8 @@
         <Value name="textOffset" value="40px 2px" />
         <Value name="textFocusedOffset" value="40px 2px" />
     </Profile>
-<!-- TODO nötig ? -->
-    <Profile name="autoDriveBoomSelectItemDate" extends="textDefault">
+
+    <Profile name="autoDriveBoomSelectItemState" extends="textDefault">
         <Value name="size" value="610px 46px" />
         <Value name="textMaxWidth" value="360px" />
         <Value name="textVerticalAlignment" value="middle" />
@@ -350,4 +350,5 @@
         <Value name="textFocusedOffset" value="40px 2px" />
         <Value name="textAlignment" value="right" />
     </Profile>
+
 </GUIProfiles>

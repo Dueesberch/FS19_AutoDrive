@@ -297,27 +297,28 @@ function ADGraphManager:renameMapMarker(newName, markerId, sendEvent)
 	end
 end
 
-function ADGraphManager:createMapMarkerOnClosest(vehicle, markerName, sendEvent, boom)
+function ADGraphManager:createMapMarkerOnClosest(vehicle, markerName, isBoom, sendEvent)
 	if vehicle ~= nil and markerName:len() > 1 then
 		-- Finding closest waypoint
 		local closest, _ = vehicle:getClosestWayPoint()
 		if closest ~= nil and closest ~= -1 and self.wayPoints[closest] ~= nil then
-			self:createMapMarker(closest, markerName, sendEvent, boom)
+			self:createMapMarker(closest, markerName, isBoom, sendEvent)
 		end
 	end
 end
 
-function ADGraphManager:createMapMarker(markerId, markerName, sendEvent, boom)
+function ADGraphManager:createMapMarker(markerId, markerName, isBoom, sendEvent)
 	if markerId ~= nil and markerId >= 0 and markerName:len() > 1 then
 		if sendEvent == nil or sendEvent == true then
 			-- Propagating marker creation all over the network
-			AutoDriveCreateMapMarkerEvent.sendEvent(markerId, markerName) -- TODO set image gate
+			AutoDriveCreateMapMarkerEvent.sendEvent(markerId, markerName, isBoom) -- TODO set image gate
 		else
 			-- Creating the new map marker
-			if self.boom then
-				self.mapMarkers[#self.mapMarkers + 1] = {id = markerId, markerIndex = (#self.mapMarkers + 1), name = markerName, group = "All", boom = false}
+			if isBoom then
+				self.mapMarkers[#self.mapMarkers + 1] = {id = markerId, markerIndex = (#self.mapMarkers + 1), name = markerName, group = "Gates", boom = true, state = ""}
+				self.mapBooms[#self.mapBooms + 1] = self.mapMarkers[#self.mapMarkers]
 			else
-				self.mapMarkers[#self.mapMarkers + 1] = {id = markerId, markerIndex = (#self.mapMarkers + 1), name = markerName, group = "All", boom = true}
+				self.mapMarkers[#self.mapMarkers + 1] = {id = markerId, markerIndex = (#self.mapMarkers + 1), name = markerName, group = "All", boom = false}
 			end
 
 			-- Calling external interop listeners
@@ -954,6 +955,27 @@ function ADGraphManager:createMarkersAtOpenEnds()
 	end
 end
 
+function ADGraphManager:getCopyWayPoints()
+	return self.deepcopy(nil, true)
+end
+
+function ADGraphManager:deepcopy(orig, init)
+	if init then
+		orig = self.wayPoints
+	end
+	local orig_type = type(orig)
+	local copy
+	if orig_type == 'table' then
+		copy = {}
+		for orig_key, orig_value in next, orig, nil do
+			copy[self.deepcopy(orig_key, false)] = self.deepcopy(orig_value, false)
+		end
+		setmetatable(copy, deepcopy(getmetatable(orig), false))
+	else -- number, string, boolean, etc
+		copy = orig
+	end
+	return copy
+end
 
 function ADGraphManager:getMapBooms()
 	return self.mapBooms
@@ -965,71 +987,4 @@ end
 
 function ADGraphManager:setMapBoom(mapMarker)
 	self.mapBooms[mapMarker.boomIndex] = mapMarker
-end
-
-function ADGraphManager:removeWayPointVehicle(wayPointsVehicle, boom, sendEvent)
-	if wayPointId ~= nil and wayPointId >= 0 and wayPointsVehicle[wayPointId] ~= nil then
-		local boomId = boom.id
-		local wayPoint = wayPointsVehicle[wayPointId]
-
-		-- Removing incoming node reference on all out nodes
-		for _, id in pairs(wayPoint.out) do
-			local incomingId = table.indexOf(self.wayPoints[id].incoming, wayPoint.id)
-			if incomingId ~= nil then
-				table.remove(self.wayPoints[id].incoming, incomingId)
-			end
-		end
-
-		-- Removing out node reference on all incoming nodes
-		for _, id in pairs(wayPoint.incoming) do
-			local outId = table.indexOf(self.wayPoints[id].out, wayPoint.id)
-			if outId ~= nil then
-				table.remove(self.wayPoints[id].out, outId)
-			end
-		end
-
-		if #wayPoint.incoming == 0 then
-			-- This is a reverse node, so we can't rely on the incoming table
-			for _, wp in pairs(self.wayPoints) do
-				if table.contains(wp.out, wayPoint.id) then
-					table.removeValue(wp.out, wayPoint.id)
-				end
-			end
-		end
-
-		-- Removing waypoint from waypoints array and invalidate it by setting id to -1
-		local wp = table.remove(self.wayPoints, wayPoint.id)
-		if wp ~= nil then
-			wp.id = -1
-		end
-
-		-- Adjusting ids for all succesive nodes :(
-		for _, wp in pairs(self.wayPoints) do
-			if wp.id > wayPointId then
-				wp.id = wp.id - 1
-			end
-			for i, outId in pairs(wp.out) do
-				if outId > wayPointId then
-					wp.out[i] = outId - 1
-				end
-			end
-			for i, incomingId in pairs(wp.incoming) do
-				if incomingId > wayPointId then
-					wp.incoming[i] = incomingId - 1
-				end
-			end
-		end
-
-		-- Adjusting way point id in markers
-		for _, marker in pairs(self.mapMarkers) do
-			if marker.id > wayPointId then
-				marker.id = marker.id - 1
-			end
-		end
-
-		-- Resetting HUD
-		AutoDrive.Hud.lastUIScale = 0
-
-		self:markChanges()
-	end
 end

@@ -243,7 +243,28 @@ function ADInputManager:input_second_func(vehicle)
             vehicle:stopAutoDrive()
         else
             -- temp map
-            vehicle.ad.wayPoints = ADGraphManager:getWayPoints()
+            vehicle.ad.wayPoints = {}
+            for i in pairs(vehicle.ad.wayPoints) do
+                vehicle.ad.wayPoints[i] = nil
+            end
+            wps = ADGraphManager:getWayPoints()
+            for wps_i, _ in pairs(wps) do
+                local wp = {}
+                wp.id = wps_i
+                
+                wp.x = wps[wps_i].x
+                wp.y = wps[wps_i].y
+                wp.z = wps[wps_i].z
+                wp['incoming'] = {}
+                for j, _ in pairs(wps[wps_i]['incoming']) do
+                    wp['incoming'][j] = wps[wps_i]['incoming'][j]
+                end
+                wp['out'] = {}
+                for k, _ in pairs(wps[wps_i]['out']) do
+                    wp['out'][k] = wps[wps_i]['out'][k]
+                end
+                vehicle.ad.wayPoints[wp.id] = wp
+            end
             -- open gui
             ret = g_gui:loadGui(AutoDrive.directory .. "gui/boomSelectGUI.xml", vehicle.id, ADBoomSelectGui:new()) -- immer nur eine gui mit der entsprechenden ID vorhanden > max boom guis = anzahl vehicle
 	        g_gui:showGui(vehicle.id)
