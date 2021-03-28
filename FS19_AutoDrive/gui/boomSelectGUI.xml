@@ -21,21 +21,6 @@
                 <GuiElement type="slider" profile="verticalGlassListSlider" size="16px 676px" dataElementId="autoDriveBoomSelectList" handleFocus="false" />
             </GuiElement>
         </GuiElement>
-<!--
-        <GuiElement type="empty" profile="autoDriveBoomSelectNavigationBox">
-            <GuiElement type="list" profile="autoDriveBoomSelectedList" position="1px -1px" onSelectionChanged="onListSelectionChanged" onDoubleClick="onDoubleClick" id="autoDriveBoomSelectedList">
-                <GuiElement type="listItem" profile="autoDriveBoomSelectedListItem" id="listItemTemplate">
-                    
-                    <GuiElement type="text" profile="autoDriveBoomSelectItemText" text="Boom" name="listItemText" />
-                    <GuiElement type="text" profile="autoDriveBoomSelectItemDate" text="2020/02/27 18:13:44" name="listItemDate" />
-                    
-                </GuiElement>
-            </GuiElement>
-            <GuiElement type="bitmap" profile="verticalGlassListSliderBackground" size="28px 344px" position="-1px -1px">
-                <GuiElement type="slider" profile="verticalGlassListSlider" size="16px 338px" dataElementId="autoDriveBoomSelectList" handleFocus="false" />
-            </GuiElement>
-        </GuiElement>
--->
         <GuiElement type="flowLayout" profile="buttonBoxDocked">
             <GuiElement type="button" profile="buttonBack" text="$l10n_gui_ad_button_wo_booms" onClick="onClickBack" />
             <GuiElement type="button" profile="buttonOK" text="$l10n_gui_ad_button_start" onClick="onClickOk" />
