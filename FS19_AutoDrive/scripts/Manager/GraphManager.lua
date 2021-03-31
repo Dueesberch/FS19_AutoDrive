@@ -315,7 +315,7 @@ function ADGraphManager:createMapMarker(markerId, markerName, isBoom, sendEvent)
 		else
 			-- Creating the new map marker
 			if isBoom then
-				self.mapMarkers[#self.mapMarkers + 1] = {id = markerId, markerIndex = (#self.mapMarkers + 1), name = markerName, group = "Gates", boom = true, state = ""}
+				self.mapMarkers[#self.mapMarkers + 1] = {id = markerId, markerIndex = (#self.mapMarkers + 1), name = markerName, group = "Gates", boom = true, boomIndex = #self.mapBooms + 1, state = ""}
 				self.mapBooms[#self.mapBooms + 1] = self.mapMarkers[#self.mapMarkers]
 			else
 				self.mapMarkers[#self.mapMarkers + 1] = {id = markerId, markerIndex = (#self.mapMarkers + 1), name = markerName, group = "All", boom = false}

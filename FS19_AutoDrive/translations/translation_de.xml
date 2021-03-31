@@ -324,9 +324,12 @@
         <text name="AD_task_drive_to_park"				        text="Fahre zum Parkplatz" />
 
 		<!-- gate function part-->
-		<text name="gui_ad_createBoomText"						text="Schranke erstellen" />
-		<text name="gui_ad_boomSelectTitle" 					text="Schranken auswählen" />
-		<text name="gui_ad_button_start" 						text="Berechnung starten" />
-		<text name="gui_ad_button_wo_booms" 					text="Ohne Schranken starten" />
+		<text name="ad_gates"										text="Schranken"/>
+		<text name="gui_ad_gate_createBoomText"						text="Schranke erstellen"/>
+		<text name="gui_ad_gate_boomSelectTitle" 					text="Schranken auswählen"/>
+		<text name="gui_ad_gate_button_start" 						text="Start"/>
+		<text name="gui_ad_gate_button_wo_booms" 					text="Öffnen"/>
+		<text name="gui_ad_gate_button_save"		 				text="Speichern"/>
+		<text name="gui_ad_gate_button_load" 						text="Laden"/>
 	</texts>
 </l10n>

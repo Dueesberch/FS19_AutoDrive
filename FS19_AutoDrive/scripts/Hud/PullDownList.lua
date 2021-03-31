@@ -194,6 +194,12 @@ function ADPullDownList:onDraw(vehicle, uiScale)
                         text = text .. " " .. g_i18n:getText("gui_ad_filter") .. ": " .. vehicle.ad.destinationFilterText
                     end
                 end
+                if text == "Gates" and listEntry.isFolder then
+                    text = g_i18n:getText("ad_gates")
+                    if vehicle.ad.destinationFilterText ~= "" then
+                        text = text .. " " .. g_i18n:getText("gui_ad_filter") .. ": " .. vehicle.ad.destinationFilterText
+                    end
+                end
                 if listEntry.isFolder == false and self.type ~= ADPullDownList.TYPE_FILLTYPE and useFolders then
                     text = "   " .. text
                 end

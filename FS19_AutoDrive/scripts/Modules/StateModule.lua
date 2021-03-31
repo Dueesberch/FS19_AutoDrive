@@ -55,6 +55,8 @@ function ADStateModule:reset()
     self.remainingDriveTime = 0
     self.calculateRemainingDriveTimeInterval = 0
     self.refuelFillType = 0
+
+    self.default_booms = {}
 end
 
 function ADStateModule:readFromXMLFile(xmlFile, key)
@@ -109,6 +111,26 @@ function ADStateModule:readFromXMLFile(xmlFile, key)
     if driverName ~= nil then
         self.driverName = driverName
     end
+
+    local default_booms = getXMLString(xmlFile, key .. "#default_booms")
+    if default_booms ~= nil then
+        self.default_booms = default_booms:split(',')
+    end
+end
+
+function ADStateModule:cleanupDefaultBooms()
+    for j, k in pairs(self.default_booms) do
+        local found = false
+        for _, i in pairs(ADGraphManager:getMapMarkers()) do
+            if i.name == k then
+                found = true
+                break
+            end
+        end
+        if found == false then
+            table.remove(self.default_booms, j)
+        end
+    end
 end
 
 function ADStateModule:saveToXMLFile(xmlFile, key)
@@ -125,6 +147,8 @@ function ADStateModule:saveToXMLFile(xmlFile, key)
     setXMLInt(xmlFile, key .. "#fieldSpeedLimit", self.fieldSpeedLimit)
     setXMLInt(xmlFile, key .. "#parkDestination", self.parkDestination)
     setXMLString(xmlFile, key .. "#driverName", self.driverName)
+    self:cleanupDefaultBooms()
+    setXMLString(xmlFile, key .. "#default_booms", table.concat(self.default_booms, ","))
 end
 
 function ADStateModule:writeStream(streamId)
@@ -836,4 +860,12 @@ end
 function ADStateModule:setRefuelFillType(refuelFillType)
 	self.refuelFillType = refuelFillType
 	self:raiseDirtyFlag()
+end
+
+function ADStateModule:setDefaultBooms(booms)
+    self.default_booms = booms
+end
+
+function ADStateModule:getDefaultBooms()
+    return self.default_booms
 end
