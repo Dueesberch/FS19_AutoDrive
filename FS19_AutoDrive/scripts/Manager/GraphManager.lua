@@ -982,9 +982,14 @@ function ADGraphManager:getMapBooms()
 end
 
 function ADGraphManager:resetMapBooms()
-	self.mapMarkers = {}
+	self.mapBooms = {}
 end
 
-function ADGraphManager:setMapBoom(mapMarker)
-	self.mapBooms[mapMarker.boomIndex] = mapMarker
+function ADGraphManager:setMapBoom(mapBoom)
+	self.mapBooms[mapBoom.boomIndex] = mapBoom
+end
+
+
+function ADGraphManager:setMapBooms(mapBooms)
+	self.mapBooms = mapBooms
 end

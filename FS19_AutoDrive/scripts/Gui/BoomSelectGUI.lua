@@ -17,6 +17,7 @@ function ADBoomSelectGui:onCreate()
 end
 
 function ADBoomSelectGui:initBooms()
+	vehicle = g_currentMission.controlledVehicle
 	self.booms = ADGraphManager:getMapBooms()
 	
 	if #self.booms == 0 then
@@ -24,7 +25,6 @@ function ADBoomSelectGui:initBooms()
 		vehicle.ad.stateModule:getCurrentMode():start()
 	end
 
-	vehicle = g_currentMission.controlledVehicle
 	local defaults = vehicle.ad.stateModule:getDefaultBooms()
 	for j, r in pairs(self.booms) do
 		local found
@@ -45,7 +45,6 @@ function ADBoomSelectGui:initBooms()
 end
 
 function ADBoomSelectGui:onOpen()
-	-- TODO clean defaults
 	self:initBooms()
 	self:refreshItems()
 	ADBoomSelectGui:superClass().onOpen(self)

@@ -173,6 +173,8 @@ function ADStateModule:writeStream(streamId)
     streamWriteString(streamId, self.driverName)
     streamWriteUInt16(streamId, self.remainingDriveTime)
     streamWriteUIntN(streamId, self.refuelFillType, 8)
+    
+    streamWriteString(streamId, self.default_booms)
 end
 
 function ADStateModule:readStream(streamId)
@@ -199,6 +201,8 @@ function ADStateModule:readStream(streamId)
     self.refuelFillType = streamReadUIntN(streamId, 8)
 
     self.currentLocalizedTaskInfo = AutoDrive.localize(self.currentTaskInfo)
+
+    self.default_booms = streamReadString(streamId)
 end
 
 function ADStateModule:writeUpdateStream(streamId)
@@ -223,6 +227,8 @@ function ADStateModule:writeUpdateStream(streamId)
     streamWriteString(streamId, self.driverName)
 	streamWriteUInt16(streamId, self.remainingDriveTime)
     streamWriteUIntN(streamId, self.refuelFillType, 8)
+
+    streamWriteString(streamId, self.default_booms)
 end
 
 function ADStateModule:readUpdateStream(streamId)
@@ -249,6 +255,8 @@ function ADStateModule:readUpdateStream(streamId)
     self.refuelFillType = streamReadUIntN(streamId, 8)
 
     self.currentLocalizedTaskInfo = AutoDrive.localize(self.currentTaskInfo)
+
+    self.driverName = streamReadString(streamId)
 end
 
 function ADStateModule:update(dt)

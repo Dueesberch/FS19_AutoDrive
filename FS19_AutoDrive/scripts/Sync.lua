@@ -22,7 +22,7 @@ function AutoDriveSync:delete()
 end
 
 function AutoDriveSync:writeStream(streamId)
-    AutoDriveSync.streamWriteGraph(streamId, ADGraphManager:getWayPoints(), ADGraphManager:getMapMarkers(), ADGraphManager:getGroups())
+    AutoDriveSync.streamWriteGraph(streamId, ADGraphManager:getWayPoints(), ADGraphManager:getMapMarkers(), ADGraphManager:getGroups(), ADGraphManager:getMapBooms())
     AutoDriveSync:superClass().writeStream(self, streamId)
 end
 
@@ -32,6 +32,7 @@ function AutoDriveSync:readStream(streamId)
     ADGraphManager:setMapMarkers(mapMarkers)
     AutoDrive:notifyDestinationListeners()
     ADGraphManager:setGroups(groups)
+    ADGraphManager:setMapBoom(mapBooms)
     AutoDrive.Hud.lastUIScale = 0
     AutoDriveSync:superClass().readStream(self, streamId)
 end
@@ -72,7 +73,7 @@ function AutoDriveSync:mouseEvent(posX, posY, isDown, isUp, button)
     AutoDriveSync:superClass().mouseEvent(self, posX, posY, isDown, isUp, button)
 end
 
-function AutoDriveSync.streamWriteGraph(streamId, wayPoints, mapMarkers, groups)
+function AutoDriveSync.streamWriteGraph(streamId, wayPoints, mapMarkers, groups, mapBooms)
     local self = AutoDriveSync
     local paramsXZ = g_currentMission.vehicleXZPosCompressionParams
     local paramsY = g_currentMission.vehicleYPosCompressionParams
@@ -132,6 +133,18 @@ function AutoDriveSync.streamWriteGraph(streamId, wayPoints, mapMarkers, groups)
     for gName, gId in pairs(groups) do
         streamWriteUIntN(streamId, gId, self.GC_SEND_NUM_BITS)
         AutoDrive.streamWriteStringOrEmpty(streamId, gName)
+    end
+
+    
+    -- writing the amount of markers we are going to send
+    local boomsCount = #mapBooms
+    self.print("[AutoDriveSync] Writing %s booms", boomssCount)
+    streamWriteUIntN(streamId, boomssCount, self.MC_SEND_NUM_BITS)
+    -- writing markers
+    for _, boom in pairs(mapBooms) do
+        streamWriteUIntN(streamId, boom.id, self.MWPC_SEND_NUM_BITS)
+        AutoDrive.streamWriteStringOrEmpty(streamId, boom.name)
+        AutoDrive.streamWriteStringOrEmpty(streamId, boom.group)
     end
 
     offset = streamGetWriteOffset(streamId) - offset
@@ -211,9 +224,25 @@ function AutoDriveSync.streamReadGraph(streamId)
         end
     end
 
+    -- reading amount of booms we are going to read
+    local mapBoomCounter = streamReadUIntN(streamId, self.MC_SEND_NUM_BITS)
+    self.print("[AutoDriveSync] Reading %s markers", mapMarkerCounter)
+    -- reading markers
+    for i = 1, mapBoomCounter do
+        local boomId = streamReadUIntN(streamId, self.MWPC_SEND_NUM_BITS)
+        if wayPoints[boomId] ~= nil then
+            local boom = {id = boomId, boomIndex = i, name = AutoDrive.streamReadStringOrEmpty(streamId), group = AutoDrive.streamReadStringOrEmpty(streamId)}
+            mapBooms[i] = boom
+        else
+            g_logManager:error("[AutoDriveSync] Error receiving boom %s (%s)", AutoDrive.streamReadStringOrEmpty(streamId), boomId)
+            -- we have to read everything to keep the right reading order
+            _ = AutoDrive.streamReadStringOrEmpty(streamId)
+        end
+    end
+
     offset = streamGetReadOffset(streamId) - offset
     self.print("[AutoDriveSync] Read %s bits (%s bytes) in %s ms", offset, offset / 8, netGetTime() - time)
-    return wayPoints, mapMarkers, groups
+    return wayPoints, mapMarkers, groups, mapBooms
 end
 
 function AutoDriveSync.print(text, ...)
