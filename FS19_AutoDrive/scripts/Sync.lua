@@ -143,7 +143,9 @@ function AutoDriveSync.streamWriteGraph(streamId, wayPoints, mapMarkers, groups,
     -- writing markers
     for _, boom in pairs(mapBooms) do
         streamWriteUIntN(streamId, boom.id, self.MWPC_SEND_NUM_BITS)
+        g_logManager:info(boom.name)
         AutoDrive.streamWriteStringOrEmpty(streamId, boom.name)
+        g_logManager:info(boom.group)
         AutoDrive.streamWriteStringOrEmpty(streamId, boom.group)
     end
 
