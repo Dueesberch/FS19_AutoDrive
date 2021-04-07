@@ -138,8 +138,8 @@ function AutoDriveSync.streamWriteGraph(streamId, wayPoints, mapMarkers, groups,
     
     -- writing the amount of markers we are going to send
     local boomsCount = #mapBooms
-    self.print("[AutoDriveSync] Writing %s booms", boomssCount)
-    streamWriteUIntN(streamId, boomssCount, self.MC_SEND_NUM_BITS)
+    self.print("[AutoDriveSync] Writing %s booms", boomsCount)
+    streamWriteUIntN(streamId, boomsCount, self.MC_SEND_NUM_BITS)
     -- writing markers
     for _, boom in pairs(mapBooms) do
         streamWriteUIntN(streamId, boom.id, self.MWPC_SEND_NUM_BITS)
