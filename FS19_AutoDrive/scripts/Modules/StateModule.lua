@@ -174,7 +174,7 @@ function ADStateModule:writeStream(streamId)
     streamWriteUInt16(streamId, self.remainingDriveTime)
     streamWriteUIntN(streamId, self.refuelFillType, 8)
     
-    streamWriteString(streamId, self.default_booms)
+    streamWriteString(streamId, table.concat(self.default_booms, ","))
 end
 
 function ADStateModule:readStream(streamId)
@@ -202,7 +202,10 @@ function ADStateModule:readStream(streamId)
 
     self.currentLocalizedTaskInfo = AutoDrive.localize(self.currentTaskInfo)
 
-    self.default_booms = streamReadString(streamId)
+    local default_booms_str = streamReadString(streamId)
+    if default_booms_str ~= nil then
+        self.default_booms = default_booms_str:split(',')
+    end
 end
 
 function ADStateModule:writeUpdateStream(streamId)
