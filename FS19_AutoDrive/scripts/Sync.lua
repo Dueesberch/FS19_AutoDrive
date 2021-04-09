@@ -27,12 +27,12 @@ function AutoDriveSync:writeStream(streamId)
 end
 
 function AutoDriveSync:readStream(streamId)
-    local wayPoints, mapMarkers, groups = AutoDriveSync.streamReadGraph(streamId)
+    local wayPoints, mapMarkers, groups, mapBooms = AutoDriveSync.streamReadGraph(streamId)
     ADGraphManager:setWayPoints(wayPoints)
     ADGraphManager:setMapMarkers(mapMarkers)
     AutoDrive:notifyDestinationListeners()
     ADGraphManager:setGroups(groups)
-    ADGraphManager:setMapBoom(mapBooms)
+    ADGraphManager:setMapBooms(mapBooms)
     AutoDrive.Hud.lastUIScale = 0
     AutoDriveSync:superClass().readStream(self, streamId)
 end
@@ -143,9 +143,7 @@ function AutoDriveSync.streamWriteGraph(streamId, wayPoints, mapMarkers, groups,
     -- writing markers
     for _, boom in pairs(mapBooms) do
         streamWriteUIntN(streamId, boom.id, self.MWPC_SEND_NUM_BITS)
-        g_logManager:info(boom.name)
         AutoDrive.streamWriteStringOrEmpty(streamId, boom.name)
-        g_logManager:info(boom.group)
         AutoDrive.streamWriteStringOrEmpty(streamId, boom.group)
     end
 
@@ -159,6 +157,7 @@ function AutoDriveSync.streamReadGraph(streamId)
     local wayPoints = {}
     local mapMarkers = {}
     local groups = {}
+    local mapBooms = {}
 
     local paramsXZ = g_currentMission.vehicleXZPosCompressionParams
     local paramsY = g_currentMission.vehicleYPosCompressionParams
