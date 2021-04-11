@@ -5,17 +5,16 @@ function AutoDrive:dijkstraLiveLongLine(current_in, linked_in, target_id)
 	local distanceToAdd = 0
 	local angle = 0
 	local current_pre = 0
-	local vehicle = g_currentMission.controlledVehicle
-	local wayPoints = vehicle.ad.wayPoints
+	local wayPoints = ADGraphManager:getWayPoints()
 	local isLinewithReverse = false
 	local count = 1
 
-	if wayPoints[linked].incoming ~= nil and wayPoints[linked].out ~= nil and #wayPoints[linked].incoming == 1 and #wayPoints[linked].out == 1 then
+	if self.temp_wayPoints[linked].incoming ~= nil and self.temp_wayPoints[linked].out ~= nil and #self.temp_wayPoints[linked].incoming == 1 and #self.temp_wayPoints[linked].out == 1 then
 		if nil == AutoDrive.dijkstraCalc.distance[current] then
 			AutoDrive.dijkstraCalc.distance[current] = 100000000
 		end
 		newdist = AutoDrive.dijkstraCalc.distance[current]
-		while #wayPoints[linked].incoming <= 1 and #wayPoints[linked].out == 1 and not (linked == target_id) do
+		while #self.temp_wayPoints[linked].incoming <= 1 and #self.temp_wayPoints[linked].out == 1 and not (linked == target_id) do
 			count = count + 1
 			if count > 5000 then
 				return false, false --something went wrong. prevent overflow here
@@ -30,10 +29,10 @@ function AutoDrive:dijkstraLiveLongLine(current_in, linked_in, target_id)
 			local wp_ref
 			local isReverseStart = false
 			local isReverseEnd = false
-			wp_current = wayPoints[current]
-			wp_ahead = wayPoints[linked]
+			wp_current = self.temp_wayPoints[current]
+			wp_ahead = self.temp_wayPoints[linked]
 			if AutoDrive.dijkstraCalc.pre[current] ~= nil and AutoDrive.dijkstraCalc.pre[current] ~= -1 then
-				wp_ref = wayPoints[AutoDrive.dijkstraCalc.pre[current]]
+				wp_ref = self.temp_wayPoints[AutoDrive.dijkstraCalc.pre[current]]
 				isReverseStart = not table.contains(wp_ahead.incoming, wp_current.id)
 				isReverseEnd = table.contains(wp_ahead.incoming, wp_current.id) and not table.contains(wp_current.incoming, wp_ref.id)
 				isLinewithReverse = isLinewithReverse or (isReverseStart or isReverseEnd)
@@ -59,7 +58,7 @@ function AutoDrive:dijkstraLiveLongLine(current_in, linked_in, target_id)
 			AutoDrive.dijkstraCalc.pre[linked] = current
 
 			current = linked
-			linked = wayPoints[current].out[1]
+			linked = self.temp_wayPoints[current].out[1]
 
 			if nil == AutoDrive.dijkstraCalc.pre[linked] then
 				AutoDrive.dijkstraCalc.pre[linked] = -1
@@ -77,10 +76,10 @@ function AutoDrive:dijkstraLiveLongLine(current_in, linked_in, target_id)
 		local wp_ref
 		local isReverseStart = false
 		local isReverseEnd = false
-		wp_current = wayPoints[current]
-		wp_ahead = wayPoints[linked]
+		wp_current = self.temp_wayPoints[current]
+		wp_ahead = self.temp_wayPoints[linked]
 		if AutoDrive.dijkstraCalc.pre[current] ~= nil and AutoDrive.dijkstraCalc.pre[current] ~= -1 then
-			wp_ref = wayPoints[AutoDrive.dijkstraCalc.pre[current]]
+			wp_ref = self.temp_wayPoints[AutoDrive.dijkstraCalc.pre[current]]
 			isReverseStart = not table.contains(wp_ahead.incoming, wp_current.id)
 			isReverseEnd = table.contains(wp_ahead.incoming, wp_current.id) and not table.contains(wp_current.incoming, wp_ref.id)
 			isLinewithReverse = isLinewithReverse or (isReverseStart or isReverseEnd)
@@ -114,7 +113,7 @@ function AutoDrive:dijkstraLiveLongLine(current_in, linked_in, target_id)
 			AutoDrive.dijkstraCalc.distance[linked] = newdist
 			AutoDrive.dijkstraCalc.pre[linked] = current
 
-			if #wayPoints[linked].out > 0 then
+			if #self.temp_wayPoints[linked].out > 0 then
 				AutoDrive.dijkstraCalc.Q.dummy_id = AutoDrive.dijkstraCalc.Q.dummy_id + 1
 				table.insert(AutoDrive.dijkstraCalc.Q, 1, AutoDrive.dijkstraCalc.Q.dummy_id)
 				AutoDrive.dijkstraCalc.Q[1] = linked
@@ -149,8 +148,6 @@ function AutoDrive:dijkstraLive(start, target)
 	local angle = 0
 	local result = false
 	local target_found = false
-	local vehicle = g_currentMission.controlledVehicle
-	local wayPoints = vehicle.ad.wayPoints
 
 	if start == nil or start == 0 or start == -1 or target == nil or target == 0 or target == -1 then
 		return false
@@ -186,9 +183,9 @@ function AutoDrive:dijkstraLive(start, target)
 			AutoDrive.dijkstraCalc.Q = {}
 		else
 			if AutoDrive.dijkstraCalc.Q[shortest_index] ~= nil then
-				if #wayPoints[shortest_id].out > 0 then
-					for i, linkedNodeId in pairs(wayPoints[shortest_id].out) do
-						local wp = wayPoints[linkedNodeId]
+				if #self.temp_wayPoints[shortest_id].out > 0 then
+					for i, linkedNodeId in pairs(self.temp_wayPoints[shortest_id].out) do
+						local wp = self.temp_wayPoints[linkedNodeId]
 
 						if wp ~= nil then
 							result = false
@@ -211,10 +208,10 @@ function AutoDrive:dijkstraLive(start, target)
 								local isReverseStart = false
 								local isReverseEnd = false
 								local isLinewithReverse = false
-								wp_current = wayPoints[shortest_id]
-								wp_ahead = wayPoints[linkedNodeId]
+								wp_current = self.temp_wayPoints[shortest_id]
+								wp_ahead = self.temp_wayPoints[linkedNodeId]
 								if AutoDrive.dijkstraCalc.pre[shortest_id] ~= nil and AutoDrive.dijkstraCalc.pre[shortest_id] ~= -1 then
-									wp_ref = wayPoints[AutoDrive.dijkstraCalc.pre[shortest_id]]
+									wp_ref = self.temp_wayPoints[AutoDrive.dijkstraCalc.pre[shortest_id]]
 									isReverseStart = not table.contains(wp_ahead.incoming, wp_current.id)
 									isReverseEnd = table.contains(wp_ahead.incoming, wp_current.id) and not table.contains(wp_current.incoming, wp_ref.id)
 									isLinewithReverse = isLinewithReverse or (isReverseStart or isReverseEnd)
@@ -309,15 +306,49 @@ return values:
 2.	table with only 1 waypoint if start_id == target_id, same as in ADGraphManager:FastShortestPath
 3.	table with waypoints from start_id to target_id including start_id and target_id
 ]]
-function AutoDrive:dijkstraLiveShortestPath(start_id, target_id)
+function AutoDrive:dijkstraLiveShortestPath(start_id, target_id, vehicle)
     if ADGraphManager:hasChanges() then
 		AutoDrive.checkWaypointsLinkedtothemselve(true)		-- find WP linked to themselve, with parameter true issues will be fixed
 		AutoDrive.checkWaypointsMultipleSameOut(true)		-- find WP with multiple same out ID, with parameter true issues will be fixed
         ADGraphManager:resetChanges()
     end
 
-	local vehicle = g_currentMission.controlledVehicle
-	local wayPoints = vehicle.ad.wayPoints
+	self.temp_wayPoints = {}
+	for i in pairs(self.temp_wayPoints) do
+		self.temp_wayPoints[i] = nil
+	end
+	local wps = ADGraphManager:getWayPoints()
+	for wps_i, _ in pairs(wps) do
+		local wp = {}
+		wp.id = wps_i
+		
+		wp.x = wps[wps_i].x
+		wp.y = wps[wps_i].y
+		wp.z = wps[wps_i].z
+		wp['incoming'] = {}
+		for j, _ in pairs(wps[wps_i]['incoming']) do
+			wp['incoming'][j] = wps[wps_i]['incoming'][j]
+		end
+		wp['out'] = {}
+		for k, _ in pairs(wps[wps_i]['out']) do
+			wp['out'][k] = wps[wps_i]['out'][k]
+		end
+		self.temp_wayPoints[wp.id] = wp
+	end
+	local closed = vehicle.ad.stateModule:getClosedBooms()
+	g_logManager:info("BOOM info: AutoDrive:dijkstraLiveShortestPath boomlength: %s", #closed)
+	for _, boom in pairs(closed) do
+		g_logManager:info("BOOM info: AutoDrive:dijkstraLiveShortestPath boom: %s", boom)
+		for i=1, #self.temp_wayPoints[boom].out do
+			for j=1, #self.temp_wayPoints[self.temp_wayPoints[boom].out[i]].incoming do
+				if self.temp_wayPoints[self.temp_wayPoints[boom].out[i]].incoming[j] == boom then
+					self.temp_wayPoints[self.temp_wayPoints[boom].out[i]].incoming[j] = nil
+				end
+			end
+			self.temp_wayPoints[boom].out[i] = nil
+		end
+	end
+
 	local ret = false
 	ret = AutoDrive:dijkstraLive(start_id, target_id)
 	if false == ret then
@@ -328,7 +359,7 @@ function AutoDrive:dijkstraLiveShortestPath(start_id, target_id)
 	local id = target_id
 
 	while (AutoDrive.dijkstraCalc.pre[id] ~= -1 and id ~= nil) or id == start_id do
-		table.insert(wp, 1, wayPoints[id])
+		table.insert(wp, 1, self.temp_wayPoints[id])
 		count = count + 1
 		if id == start_id then
 			id = nil

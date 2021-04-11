@@ -57,6 +57,7 @@ function ADStateModule:reset()
     self.refuelFillType = 0
 
     self.default_booms = {}
+    self.closed_booms = {}
 end
 
 function ADStateModule:readFromXMLFile(xmlFile, key)
@@ -152,6 +153,7 @@ function ADStateModule:saveToXMLFile(xmlFile, key)
 end
 
 function ADStateModule:writeStream(streamId)
+    g_logManager:info("writeStream")
     streamWriteBool(streamId, self.active)
     streamWriteUIntN(streamId, self.mode, 4)
     streamWriteUIntN(streamId, self:getFirstMarkerId() + 1, 17)
@@ -174,10 +176,12 @@ function ADStateModule:writeStream(streamId)
     streamWriteUInt16(streamId, self.remainingDriveTime)
     streamWriteUIntN(streamId, self.refuelFillType, 8)
     
-    --streamWriteString(streamId, table.concat(self.default_booms, ","))
+    streamWriteString(streamId, table.concat(self.default_booms, ","))
+    streamWriteString(streamId, table.concat(self.closed_booms, ","))
 end
 
 function ADStateModule:readStream(streamId)
+    g_logManager:info("readStream")
     self.active = streamReadBool(streamId)
     self.mode = streamReadUIntN(streamId, 4)
     self.firstMarker = ADGraphManager:getMapMarkerById(streamReadUIntN(streamId, 17) - 1)
@@ -201,14 +205,20 @@ function ADStateModule:readStream(streamId)
     self.refuelFillType = streamReadUIntN(streamId, 8)
 
     self.currentLocalizedTaskInfo = AutoDrive.localize(self.currentTaskInfo)
-
---[[    local default_booms_str = streamReadString(streamId)
+    
+    local default_booms_str = streamReadString(streamId)
     if default_booms_str ~= nil then
         self.default_booms = default_booms_str:split(',')
-    end]]
+    end
+    
+    local closed_booms_str = streamReadString(streamId)
+    if closed_booms_str ~= nil then
+        self.closed_booms = closed_booms_str:split(',')
+    end
 end
 
 function ADStateModule:writeUpdateStream(streamId)
+    g_logManager:info("writeUpdateStream")
     streamWriteBool(streamId, self.active)
     streamWriteUIntN(streamId, self.mode, 4)
     streamWriteUIntN(streamId, self:getFirstMarkerId() + 1, 17)
@@ -231,10 +241,12 @@ function ADStateModule:writeUpdateStream(streamId)
 	streamWriteUInt16(streamId, self.remainingDriveTime)
     streamWriteUIntN(streamId, self.refuelFillType, 8)
 
-    --streamWriteString(streamId, table.concat(self.default_booms, ","))
+    streamWriteString(streamId, table.concat(self.default_booms, ","))
+    streamWriteString(streamId, table.concat(self.closed_booms, ","))
 end
 
 function ADStateModule:readUpdateStream(streamId)
+    g_logManager:info("readUpdateStream")
     self.active = streamReadBool(streamId)
     self.mode = streamReadUIntN(streamId, 4)
     self.firstMarker = ADGraphManager:getMapMarkerById(streamReadUIntN(streamId, 17) - 1)
@@ -258,11 +270,16 @@ function ADStateModule:readUpdateStream(streamId)
     self.refuelFillType = streamReadUIntN(streamId, 8)
 
     self.currentLocalizedTaskInfo = AutoDrive.localize(self.currentTaskInfo)
---[[
+
     local default_booms_str = streamReadString(streamId)
     if default_booms_str ~= nil then
         self.default_booms = default_booms_str:split(',')
-    end]]
+    end
+    
+    local closed_booms_str = streamReadString(streamId)
+    if closed_booms_str ~= nil then
+        self.closed_booms = closed_booms_str:split(',')
+    end
 end
 
 function ADStateModule:update(dt)
@@ -882,4 +899,17 @@ end
 
 function ADStateModule:getDefaultBooms()
     return self.default_booms
+end
+
+function ADStateModule:clearClosedBooms()
+    self.closed_booms = {}
+end
+
+function ADStateModule:addClosedBoom(boom)
+    g_logManager:info("BOOM info: ADStateModule:addClosedBoom boom: %s", boom)
+    self.closed_booms[#self.closed_booms + 1] = boom
+end
+
+function ADStateModule:getClosedBooms()
+    return self.closed_booms
 end

@@ -83,17 +83,9 @@ end
 function ADBoomSelectGui:onClickOk()
 	vehicle = g_currentMission.controlledVehicle
 	ADBoomSelectGui:superClass().onClickBack(self)
-	-- remove outgoing from boom vehicle waypoint
-	for _, r in pairs(self.booms) do
-		if r.state == "closed" then
-				for i=1, #vehicle.ad.wayPoints[r.id].out do
-					for j=1, #vehicle.ad.wayPoints[vehicle.ad.wayPoints[r.id].out[i]].incoming do
-						if vehicle.ad.wayPoints[vehicle.ad.wayPoints[r.id].out[i]].incoming[j] == r.id then
-							vehicle.ad.wayPoints[vehicle.ad.wayPoints[r.id].out[i]].incoming[j] = nil
-						end
-					end
-					vehicle.ad.wayPoints[r.id].out[i] = nil
-				end
+	for _, boom in pairs(self.booms) do
+		if boom.state == "closed" then
+			vehicle.ad.stateModule:addClosedBoom(boom.id)
 		end
 	end
 	vehicle.ad.stateModule:getCurrentMode():start()

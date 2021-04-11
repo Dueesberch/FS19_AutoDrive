@@ -124,20 +124,20 @@ function ADGraphManager:getPathTo(vehicle, waypointId)
 	local wp = {}
 	local closestWaypoint = self:findMatchingWayPointForVehicle(vehicle)
 	if closestWaypoint ~= nil then
-		wp = self:pathFromTo(closestWaypoint, waypointId)
+		wp = self:pathFromTo(closestWaypoint, waypointId, vehicle)
 	end
 
 	return wp
 end
 
-function ADGraphManager:pathFromTo(startWaypointId, targetWaypointId)
+function ADGraphManager:pathFromTo(startWaypointId, targetWaypointId, vehicle)
 	local wp = {}
 	if startWaypointId ~= nil and self.wayPoints[startWaypointId] ~= nil and targetWaypointId ~= nil and self.wayPoints[targetWaypointId] ~= nil then
 		if startWaypointId == targetWaypointId then
 			table.insert(wp, self.wayPoints[targetWaypointId])
 		else
 			-- wp = ADPathCalculator:GetPath(startWaypointId, targetWaypointId)
-			wp = AutoDrive:dijkstraLiveShortestPath(startWaypointId, targetWaypointId)
+			wp = AutoDrive:dijkstraLiveShortestPath(startWaypointId, targetWaypointId, vehicle)
 		end
 	end
 	return wp
