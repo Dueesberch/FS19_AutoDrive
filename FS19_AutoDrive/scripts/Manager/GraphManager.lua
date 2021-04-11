@@ -143,6 +143,7 @@ function ADGraphManager:pathFromTo(startWaypointId, targetWaypointId, vehicle)
 	return wp
 end
 
+-- [Dueesberch] never called? dead code
 function ADGraphManager:pathFromToMarker(startWaypointId, markerId)
 	local wp = {}
 	if startWaypointId ~= nil and self.wayPoints[startWaypointId] ~= nil and self.mapMarkers[markerId] ~= nil and self.mapMarkers[markerId].id ~= nil then
@@ -285,6 +286,19 @@ function ADGraphManager:renameMapMarker(newName, markerId, sendEvent)
 			local oldName = self.mapMarkers[markerId].name
 			-- Renaming map marker
 			self.mapMarkers[markerId].name = newName
+
+			for _, boom in pairs(self.mapBooms) do
+				if boom.id == markerId then
+					boom.name = newName
+				end
+			end
+			local vehicles = g_currentMission.vehicles
+			g_logManager:info("length vehicles %s", #vehicles)
+			for i=1, #vehicles do
+				if vehicles[i].ad ~= nil then
+					vehicles[i].ad.stateModule:renameDefaultBoom(oldName, newName)
+				end
+			end
 
 			-- Calling external interop listeners
 			AutoDrive:notifyDestinationListeners()

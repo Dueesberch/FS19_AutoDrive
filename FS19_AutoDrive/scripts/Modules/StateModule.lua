@@ -897,6 +897,14 @@ function ADStateModule:setDefaultBooms(booms)
     self.default_booms = booms
 end
 
+function ADStateModule:renameDefaultBoom(oldName, newName)
+    for i, boom in pairs(self.default_booms) do
+        if boom == oldName then
+            self.default_booms[i] = newName
+        end
+    end
+end
+
 function ADStateModule:getDefaultBooms()
     return self.default_booms
 end
