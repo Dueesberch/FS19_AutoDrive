@@ -13,16 +13,21 @@ function DriveToMode:reset()
 end
 
 function DriveToMode:start()
+    g_logManager:info("BOOM info: DriveToMode:start - start")
     if not self.vehicle.ad.stateModule:isActive() then
+        g_logManager:info("BOOM info: DriveToMode:start - isActive")
         self.vehicle:startAutoDrive()
     end
 
     if self.vehicle.ad.stateModule:getFirstMarker() == nil then
+        g_logManager:info("BOOM info: DriveToMode:start - first marker is nil")
         return
     end
     self.destinationID = self.vehicle.ad.stateModule:getFirstMarker().id
 
+    g_logManager:info("BOOM info: DriveToMode:start - create Task")
     self.driveToDestinationTask = DriveToDestinationTask:new(self.vehicle, self.destinationID)
+    g_logManager:info("BOOM info: DriveToMode:start - addTask")
     self.vehicle.ad.taskModule:addTask(self.driveToDestinationTask)
 end
 

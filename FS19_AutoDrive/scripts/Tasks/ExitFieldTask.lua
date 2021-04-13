@@ -79,6 +79,7 @@ function ExitFieldTask:startPathPlanning()
             end
         else
             AutoDriveMessageEvent.sendMessageOrNotification(self.vehicle, ADMessagesManager.messageTypes.WARN, "$l10n_AD_Driver_of; %s $l10n_AD_cannot_find_path;", 5000, self.vehicle.ad.stateModule:getName())
+            g_logManager:info("BOOM info: ExitFieldTask:startPathPlanning - if")
             self.vehicle.ad.taskModule:abortAllTasks()
             self.vehicle.ad.taskModule:addTask(StopAndDisableADTask:new(self.vehicle))
         end
@@ -94,6 +95,7 @@ function ExitFieldTask:startPathPlanning()
             self.vehicle.ad.pathFinderModule:startPathPlanningTo(targetNode, vecToNextPoint)
         else
             AutoDriveMessageEvent.sendMessageOrNotification(self.vehicle, ADMessagesManager.messageTypes.WARN, "$l10n_AD_Driver_of; %s $l10n_AD_cannot_find_path;", 5000, self.vehicle.ad.stateModule:getName())
+            g_logManager:info("BOOM info: ExitFieldTask:startPathPlanning - else")
             self.vehicle.ad.taskModule:abortAllTasks()
             self.vehicle.ad.taskModule:addTask(StopAndDisableADTask:new(self.vehicle))
         end

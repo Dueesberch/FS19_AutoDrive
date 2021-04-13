@@ -244,6 +244,7 @@ function ADInputManager:input_second_func(vehicle)
         else
             -- open gui
 	        vehicle.ad.stateModule:clearClosedBooms()
+            g_logManager:info("BOOM info: ADInputManager:input_second_func - currentmode %s", vehicle.ad.stateModule:getCurrentMode())
             ret = g_gui:loadGui(AutoDrive.directory .. "gui/boomSelectGUI.xml", vehicle.id, ADBoomSelectGui:new()) -- immer nur eine gui mit der entsprechenden ID vorhanden > max boom guis = anzahl vehicle
 	        g_gui:showGui(vehicle.id)
             
@@ -260,7 +261,6 @@ function ADInputManager:input_decLoopCounter(vehicle)
 end
 
 function ADInputManager:input_setParkDestination(vehicle)
-    g_logManager:info("BOOM info: ADInputManager:input_setParkDestination")
     if vehicle.ad.stateModule:getFirstMarker() ~= nil then
         -- g_logManager:info("[AD] ADInputManager:input_setParkDestination vehicle %s vehicle:getIsSelected() %s", tostring(vehicle), tostring(vehicle:getIsSelected()))
 

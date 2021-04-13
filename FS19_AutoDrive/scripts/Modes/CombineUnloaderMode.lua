@@ -66,6 +66,7 @@ function CombineUnloaderMode:monitorTasks(dt)
     if self.failedPathFinder >= 5 or ((self.vehicle.ad.specialDrivingModule:shouldStopMotor() or self.vehicle.ad.specialDrivingModule.stoppedTimer:done()) and self.vehicle.ad.specialDrivingModule.isBlocked) then
         AutoDrive.debugPrint(self.vehicle, AutoDrive.DC_COMBINEINFO, "CombineUnloaderMode:monitorTasks() - detected stuck vehicle - try reversing out of it now")
         self.vehicle.ad.specialDrivingModule:releaseVehicle()
+        g_logManager:info("BOOM info: CombineUnloaderMode:monitorTasks")
         self.vehicle.ad.taskModule:abortAllTasks()
         self.activeTask = ReverseFromBadLocationTask:new(self.vehicle)
         self.state = self.STATE_REVERSE_FROM_BAD_LOCATION

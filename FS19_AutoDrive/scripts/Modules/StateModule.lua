@@ -284,6 +284,7 @@ end
 
 function ADStateModule:update(dt)
 	if self.active == true and g_server ~= nil then
+        g_logManager:info("BOOM info: ADStateModule:update - active and server")
         -- remaining drive time shall be calculated only if AD driving and only on server
 		self.calculateRemainingDriveTimeInterval = self.calculateRemainingDriveTimeInterval + dt
 		if self.calculateRemainingDriveTimeInterval > ADStateModule.CALCULATE_REMAINING_DRIVETIME_INTERVAL then
@@ -293,6 +294,7 @@ function ADStateModule:update(dt)
 	end
 
     if g_client ~= nil and self.vehicle.getIsEntered ~= nil and self.vehicle:getIsEntered() and AutoDrive.getDebugChannelIsSet(AutoDrive.DC_VEHICLEINFO) then
+        g_logManager:info("BOOM info: ADStateModule:update - debug")
 		-- debug output only displayed on client with entered vehicle
         local debug = {}
         debug.active = self.active

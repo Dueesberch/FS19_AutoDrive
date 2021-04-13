@@ -49,6 +49,7 @@ function ADDrivePathModule:setPathTo(waypointId)
         self.vehicle.ad.isStoppingWithError = true
         g_logManager:devError("[AutoDrive] Encountered a problem during initialization 'setPathTo'")
         AutoDriveMessageEvent.sendMessageOrNotification(self.vehicle, ADMessagesManager.messageTypes.ERROR, "$l10n_AD_Driver_of; %s $l10n_AD_cannot_reach; %s", 5000, self.vehicle.ad.stateModule:getName(), self.vehicle.ad.stateModule:getFirstMarker().name)
+        g_logManager:info("BOOM info: ADDrivePathModule:setPathTo")
         self.vehicle.ad.taskModule:abortAllTasks()
         self.vehicle.ad.taskModule:addTask(StopAndDisableADTask:new(self.vehicle))
     else
@@ -75,6 +76,7 @@ function ADDrivePathModule:appendPathTo(startWayPointId, wayPointId)
         self.vehicle.ad.isStoppingWithError = true
         g_logManager:devError("[AutoDrive] Encountered a problem during initialization 'appendPathTo'")
         AutoDriveMessageEvent.sendMessageOrNotification(self.vehicle, ADMessagesManager.messageTypes.ERROR, "$l10n_AD_Driver_of; %s $l10n_AD_cannot_reach; %s", 5000, self.vehicle.ad.stateModule:getName(), self.vehicle.ad.stateModule:getFirstMarker().name)
+        g_logManager:info("BOOM info: ADDrivePathModule:appendPathTo")
         self.vehicle.ad.taskModule:abortAllTasks()
         self.vehicle.ad.taskModule:addTask(StopAndDisableADTask:new(self.vehicle))
     else

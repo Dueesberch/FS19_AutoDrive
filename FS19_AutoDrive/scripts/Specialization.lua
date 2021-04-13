@@ -268,7 +268,9 @@ function AutoDrive:onWriteUpdateStream(streamId, connection, dirtyMask)
 end
 
 function AutoDrive:onUpdate(dt)
+    --g_logManager:info("BOOM info: AutoDrive:onUpdate")
     if self.isServer and self.ad.stateModule:isActive() then
+        --g_logManager:info("BOOM info: AutoDrive:onUpdate - server and active")
         self.ad.recordingModule:update(dt)
         self.ad.taskModule:update(dt)
         if self.lastMovedDistance > 0 then
@@ -280,13 +282,19 @@ function AutoDrive:onUpdate(dt)
 
     ADSensor:handleSensors(self, dt)
 
+    if self.ad.taskModule:getNumberOfTasks() > 0 then
+        g_logManager:info("BOOM info: self.ad.taskModule:getNumberOfTasks() = %s", self.ad.taskModule:getNumberOfTasks())
+    end
     if not self.ad.stateModule:isActive() and self.ad.taskModule:getNumberOfTasks() > 0 then
+        g_logManager:info("BOOM info: AutoDrive:onUpdate")
         self.ad.taskModule:abortAllTasks()
     end
 
     --For 'legacy' purposes, this value should be kept since other mods already test for this:
     self.ad.mapMarkerSelected = self.ad.stateModule:getFirstMarkerId()
+    --g_logManager:info("BOOM info: AutoDrive:onUpdate - firstMarker %s", self.ad.mapMarkerSelected)
     self.ad.mapMarkerSelected_Unload = self.ad.stateModule:getSecondMarkerId()
+    --g_logManager:info("BOOM info: AutoDrive:onUpdate - secondMarker %s", self.ad.mapMarkerSelected_Unload)
 end
 
 function AutoDrive:saveToXMLFile(xmlFile, key)
@@ -752,6 +760,7 @@ function AutoDrive:stopAutoDrive()
 
             self.ad.stateModule:setActive(false)
 
+            g_logManager:info("BOOM info: AutoDrive:stopAutoDrive")
             self.ad.taskModule:abortAllTasks()
             self.ad.taskModule:reset()
 

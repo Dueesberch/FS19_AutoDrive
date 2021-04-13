@@ -81,9 +81,11 @@ function ADHarvestManager:fireUnloader(unloader)
     if unloader.ad.stateModule:isActive() then
         local follower = unloader.ad.modes[AutoDrive.MODE_UNLOAD]:getFollowingUnloader()
         if follower ~= nil then
+            g_logManager:info("BOOM info: ADHarvestManager:fireUnloader - follower")
             follower.ad.taskModule:abortAllTasks()
             follower.ad.taskModule:addTask(StopAndDisableADTask:new(follower, ADTaskModule.DONT_PROPAGATE, true))
         end
+        g_logManager:info("BOOM info: ADHarvestManager:fireUnloader - unloader")
         unloader.ad.taskModule:abortAllTasks()
         unloader.ad.taskModule:addTask(StopAndDisableADTask:new(unloader, ADTaskModule.DONT_PROPAGATE, true))
     end

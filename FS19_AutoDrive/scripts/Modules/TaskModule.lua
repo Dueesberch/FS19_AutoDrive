@@ -13,6 +13,7 @@ function ADTaskModule:new(vehicle)
 end
 
 function ADTaskModule:reset()
+    g_logManager:info("BOOM info: ADTaskModule:reset")
     while self.tasks:Count() > 0 do
         local task = self.tasks:Dequeue()
         if task.doRestart ~= nil then
@@ -28,14 +29,17 @@ function ADTaskModule:reset()
 end
 
 function ADTaskModule:addTask(newTask)
+    g_logManager:info("BOOM info: ADTaskModule:addTask")
     self.tasks:Enqueue(newTask)
 end
 
 function ADTaskModule:getActiveTask()
+    g_logManager:info("BOOM info: ADTaskModule:getActiveTask")
     return self.activeTask
 end
 
 function ADTaskModule:setCurrentTaskFinished(stoppedFlag)
+    g_logManager:info("BOOM info: ADTaskModule:setCurrentTaskFinished")
     if stoppedFlag == nil or stoppedFlag ~= ADTaskModule.DONT_PROPAGATE then
         self.vehicle.ad.stateModule:getCurrentMode():handleFinishedTask()
     end
@@ -56,6 +60,7 @@ function ADTaskModule:setCurrentTaskFinished(stoppedFlag)
 end
 
 function ADTaskModule:abortCurrentTask(abortMessage)
+    g_logManager:info("BOOM info: ADTaskModule:abortCurrentTask")
     if abortMessage ~= nil then
         AutoDrive.printMessage(self.vehicle, abortMessage)
     end
@@ -64,6 +69,7 @@ function ADTaskModule:abortCurrentTask(abortMessage)
 end
 
 function ADTaskModule:abortAllTasks()
+    g_logManager:info("BOOM info: ADTaskModule:abortAllTasks")
     if self.activeTask ~= nil then
         self.activeTask:abort()
     end
@@ -73,11 +79,13 @@ function ADTaskModule:abortAllTasks()
 end
 
 function ADTaskModule:stopAndRestartAD()
+    g_logManager:info("BOOM info: ADTaskModule:stopAndRestartAD")
     self:abortAllTasks()
     self:addTask(StopAndDisableADTask:new(self.vehicle, ADTaskModule.DONT_PROPAGATE, true))
 end
 
 function ADTaskModule:update(dt)
+    --g_logManager:info("BOOM info: ADTaskModule:update")
     if self.activeTask ~= nil and self.activeTask.update ~= nil then
         local taskInfo = self.activeTask:getI18nInfo()
         self.activeTask:update(dt)
@@ -101,6 +109,7 @@ function ADTaskModule:update(dt)
 end
 
 function ADTaskModule:hasToRefuel()
+    g_logManager:info("BOOM info: ADTaskModule:hasToRefuel")
     if not AutoDrive.getSetting("autoRefuel", self.vehicle) then
         return false
     end
@@ -117,6 +126,7 @@ function ADTaskModule:hasToRefuel()
 end
 
 function ADTaskModule:RefuelIfNeeded()
+    g_logManager:info("BOOM info: ADTaskModule:RefuelIfNeeded")
     if self:hasToRefuel() then
         local refuelDestinationMarkerID = ADTriggerManager.getClosestRefuelDestination(self.vehicle)
         if refuelDestinationMarkerID ~= nil then
@@ -132,6 +142,7 @@ end
     
 
 function ADTaskModule:onTaskChange()
+    g_logManager:info("BOOM info: ADTaskModule:onTaskChange")
     local taskInfo = ""
     if self.activeTask ~= nil then
         taskInfo = self.activeTask:getI18nInfo()
@@ -143,10 +154,12 @@ function ADTaskModule:onTaskChange()
 end
 
 function ADTaskModule:onTaskInfoChange(taskInfo)
+    g_logManager:info("BOOM info: ADTaskModule:onTaskInfoChange")
     self.vehicle.ad.stateModule:setCurrentTaskInfo(taskInfo)
     self.lastTaskInfo = taskInfo
 end
 
 function ADTaskModule:getNumberOfTasks()
+    --g_logManager:info("BOOM info: ADTaskModule:getNumberOfTasks - %s", self.tasks:Count())
     return self.tasks:Count()
 end

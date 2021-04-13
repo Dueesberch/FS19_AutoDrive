@@ -83,11 +83,14 @@ end
 function ADBoomSelectGui:onClickOk()
 	vehicle = g_currentMission.controlledVehicle
 	ADBoomSelectGui:superClass().onClickBack(self)
+	g_logManager:info("BOOM info: ADBoomSelectGui:onClickOk - go to addclosedbooms")
 	for _, boom in pairs(self.booms) do
 		if boom.state == "closed" then
 			vehicle.ad.stateModule:addClosedBoom(boom.id)
 		end
 	end
+	g_logManager:info("BOOM info: ADBoomSelectGui:onClickOk - currentmode %s", vehicle.ad.stateModule:getCurrentMode())
+	g_logManager:info("BOOM info: ADBoomSelectGui:onClickOk - start")
 	vehicle.ad.stateModule:getCurrentMode():start()
 end
 
