@@ -21,8 +21,9 @@ function ADBoomSelectGui:initBooms()
 	self.booms = ADGraphManager:getMapBooms()
 	
 	if #self.booms == 0 then
+		g_logManager:info("self.booms is 0")
 		ADBoomSelectGui:superClass().onClickBack(self)
-		vehicle.ad.stateModule:getCurrentMode():start()
+		--vehicle.ad.stateModule:getCurrentMode():start()
 	end
 
 	local defaults = vehicle.ad.stateModule:getDefaultBooms()

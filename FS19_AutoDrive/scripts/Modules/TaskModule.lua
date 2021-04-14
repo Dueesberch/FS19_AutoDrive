@@ -34,7 +34,7 @@ function ADTaskModule:addTask(newTask)
 end
 
 function ADTaskModule:getActiveTask()
-    g_logManager:info("BOOM info: ADTaskModule:getActiveTask")
+    --g_logManager:info("BOOM info: ADTaskModule:getActiveTask")
     return self.activeTask
 end
 

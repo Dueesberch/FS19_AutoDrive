@@ -284,7 +284,7 @@ end
 
 function ADStateModule:update(dt)
 	if self.active == true and g_server ~= nil then
-        g_logManager:info("BOOM info: ADStateModule:update - active and server")
+        --g_logManager:info("BOOM info: ADStateModule:update - active and server")
         -- remaining drive time shall be calculated only if AD driving and only on server
 		self.calculateRemainingDriveTimeInterval = self.calculateRemainingDriveTimeInterval + dt
 		if self.calculateRemainingDriveTimeInterval > ADStateModule.CALCULATE_REMAINING_DRIVETIME_INTERVAL then
